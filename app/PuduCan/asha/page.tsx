@@ -19,8 +19,7 @@ function AshaPageContent() {
         ashaId: userId,
         enabled: !isLoadingAuth && !!user?.email,
         requiredData: 'patients' as const,
-
-
+    }
     const {
         data: patients = [],
         isLoading,
