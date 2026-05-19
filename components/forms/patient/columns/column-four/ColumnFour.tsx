@@ -72,6 +72,7 @@ export function ColumnFour({ form, isAsha = false }: RightColumnProps) {
                     <FormField
                         control={control}
                         name="stageOfTheCancer.stage"
+                        defaultValue="Stage I"
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
@@ -81,7 +82,7 @@ export function ColumnFour({ form, isAsha = false }: RightColumnProps) {
                                                 {field.value ? (
                                                     <span className="font-medium">{field.value}</span>
                                                 ) : (
-                                                    'Select Stage'
+                                                    'Select cancer stage'
                                                 )}
                                             </SelectValue>
                                         </SelectTrigger>
@@ -102,21 +103,22 @@ export function ColumnFour({ form, isAsha = false }: RightColumnProps) {
                     <FormField
                         control={control}
                         name="stageOfTheCancer.subStage"
+                        defaultValue="None"
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <Select value={field.value ?? ''} onValueChange={(v) => field.onChange(v === '' || v === 'none' ? undefined : v)}>
+                                    <Select value={field.value ?? ''} onValueChange={(v) => field.onChange(v === '' || v === 'None' ? undefined : v)}>
                                         <SelectTrigger className="w-full">
                                             <SelectValue>
                                                 {field.value ? (
                                                     <span className="font-medium">{field.value}</span>
                                                 ) : (
-                                                    'Sub-stage (optional)'
+                                                    'Select sub-stage (optional)'
                                                 )}
                                             </SelectValue>
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="none">None</SelectItem>
+                                            <SelectItem value="None">None</SelectItem>
                                             <SelectItem value="A">A</SelectItem>
                                             <SelectItem value="B">B</SelectItem>
                                             <SelectItem value="C">C</SelectItem>
