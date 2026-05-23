@@ -25,7 +25,7 @@ describe('formatFieldValue', () => {
   })
 
   it('formats stageOfTheCancer', () => {
-    expect(formatFieldValue('stageOfTheCancer', { stage: 'Stage 0', subStage: 'B' })).toBe('Stage 0 B')
+    expect(formatFieldValue('stageOfTheCancer', { stage: 'Stage 0', subStage: 'B' })).toBe('Stage 0 - B')
     expect(formatFieldValue('stageOfTheCancer', { stage: 'Stage II' })).toBe('Stage II')
   })
 

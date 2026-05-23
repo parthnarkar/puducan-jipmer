@@ -19,7 +19,7 @@ export function formatFieldValue(key: string, value: any): string {
       const stage = value?.stage ?? ''
       const sub = value?.subStage ?? ''
       if (!stage && !sub) return 'N/A'
-      return `${stage}${sub ? ` ${sub}` : ''}`.trim()
+      return `${stage}${sub ? ` - ${sub}` : ''}`.trim()
     }
 
     try {

@@ -23,6 +23,6 @@ describe('ViewDetailsDialog integration', () => {
 
     // label and formatted value should be visible
     expect(screen.getByText('Stage of the Cancer')).toBeTruthy()
-    expect(screen.getByText('Stage 0 B')).toBeTruthy()
+    expect(screen.getByText('Stage 0 - B')).toBeTruthy()
   })
 })
