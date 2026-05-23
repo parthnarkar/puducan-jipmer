@@ -51,7 +51,7 @@ export function ColumnFour({ form, isAsha = false }: RightColumnProps) {
                 />
                 <FormField
                     control={control}
-                    name="hbcrId"
+                    name="hbcrID"
                     render={({ field }) => (
                         <FormItem>
                             <FormControl>
