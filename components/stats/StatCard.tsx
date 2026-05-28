@@ -2,7 +2,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { motion, useReducedMotion } from 'framer-motion'
-import { fadeUpItemVariant } from './animations'
+import { modernItemVariant } from './animations'
 
 interface StatCardProps {
     title: string
@@ -16,8 +16,8 @@ export function StatCard({ title, value, subtitle, icon: Icon, iconClassName }: 
     const reduce = useReducedMotion()
     return (
         <motion.div
-            variants={reduce ? undefined : fadeUpItemVariant}
-            whileHover={reduce ? undefined : { scale: 1.02 }}
+            variants={reduce ? undefined : modernItemVariant}
+            whileHover={reduce ? undefined : { scale: 1.02, y: -3, boxShadow: '0 8px 26px rgba(15,23,42,0.08)' }}
             transition={{ duration: 0.18 }}
             style={{ display: 'block' }}
         >

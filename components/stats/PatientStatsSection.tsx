@@ -2,7 +2,7 @@
 
 import { memo, useCallback, useState, useMemo } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
-import { fadeUpVariant, staggerContainer, VIEWPORT } from './animations'
+import { modernRevealVariant, staggerContainer, VIEWPORT } from './animations'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { StatCard } from './StatCard'
 import {
@@ -494,10 +494,12 @@ const ChartCard = memo(({ title, children, empty = false, className }: ChartCard
     const reduce = useReducedMotion()
     return (
         <motion.div
-            variants={reduce ? undefined : fadeUpVariant}
+            variants={reduce ? undefined : modernRevealVariant}
             initial={reduce ? undefined : 'hidden'}
             whileInView={reduce ? undefined : 'visible'}
             viewport={VIEWPORT}
+            whileHover={reduce ? undefined : { y: -3, boxShadow: '0 10px 28px rgba(15,23,42,0.06)' }}
+            transition={{ duration: 0.28 }}
             style={{ display: 'block' }}
         >
             <Card className={className}>
