@@ -647,6 +647,7 @@ export function PatientStatsSection({ stats, patients }: PatientStatsSectionProp
                         data={diseaseData}
                         colorFn={(_, i) => getCategoricalColor(i)}
                         yAxisWidth={128}
+                        height={270}
                     />
                 </ChartCard>
 
