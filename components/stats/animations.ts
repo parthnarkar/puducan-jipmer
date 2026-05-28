@@ -12,31 +12,31 @@ export const staggerContainer: Variants = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.06,
-      delayChildren: 0.06,
+      staggerChildren: 0.12,
+      delayChildren: 0.08,
     },
   },
 }
 
 // Modern reveal: subtle springy/soft scale and lift for polished feel
 export const modernRevealVariant: Variants = {
-  hidden: { opacity: 0, y: 24, scale: 0.995 },
+  hidden: { opacity: 0, y: 28, scale: 0.96 },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { duration: 0.6, ease: DEFAULT_EASING },
+    transition: { type: 'spring', stiffness: 160, damping: 26, mass: 0.9 },
   },
 }
 
 // Modern item variant (KPI tiles)
 export const modernItemVariant: Variants = {
-  hidden: { opacity: 0, y: 16, scale: 0.997 },
+  hidden: { opacity: 0, y: 18, scale: 0.96 },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { duration: 0.42, ease: DEFAULT_EASING },
+    transition: { type: 'spring', stiffness: 220, damping: 28, mass: 0.85 },
   },
 }
 
