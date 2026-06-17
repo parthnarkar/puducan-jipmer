@@ -1,8 +1,6 @@
 'use client'
 
 import { memo, useCallback, useState, useMemo } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
-import { modernRevealVariant, staggerContainer, VIEWPORT } from './animations'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { StatCard } from './StatCard'
 import {
@@ -81,7 +79,6 @@ const getStageColor = (name: string): string =>
 // Covers common short-forms used in Indian healthcare records.
 
 const MEDICAL_TERM_MAP: Record<string, string> = {
-    // Disease abbreviations
     'ca': 'Carcinoma',
     'ca breast': 'Carcinoma Breast',
     'ca cervix': 'Carcinoma Cervix',
@@ -112,8 +109,6 @@ const MEDICAL_TERM_MAP: Record<string, string> = {
     'gbc': 'Gallbladder Carcinoma',
     'cca': 'Cholangiocarcinoma',
     'net': 'Neuroendocrine Tumor',
-
-    // Stage normalizations — all variants → single canonical form
     'stage 0': 'Stage 0',
     'stage i': 'Stage I',
     'stage 1': 'Stage I',
@@ -123,8 +118,6 @@ const MEDICAL_TERM_MAP: Record<string, string> = {
     'stage 3': 'Stage III',
     'stage iv': 'Stage IV',
     'stage 4': 'Stage IV',
-
-    // Insurance / ration card shorthands
     'apl': 'APL Card',
     'bpl': 'BPL Card',
     'aay': 'Antyodaya Card',
@@ -136,12 +129,6 @@ const MEDICAL_TERM_MAP: Record<string, string> = {
     'n/a': 'Not Available',
 }
 
-/**
- * Normalizes a raw medical label:
- *  1. Trim whitespace
- *  2. Exact lower-case lookup in MEDICAL_TERM_MAP
- *  3. Fall back to toTitleCase
- */
 export const normalizeMedicalTerm = (raw: string): string => {
     const trimmed = raw.trim()
     const lower = trimmed.toLowerCase()
@@ -152,10 +139,6 @@ export const normalizeMedicalTerm = (raw: string): string => {
 
 interface DataPoint { name: string; value: number }
 
-/**
- * Merges DataPoints that resolve to the same normalized label, summing values.
- * Sorted descending so the longest bar is always at the top.
- */
 export function dedupeData(data: DataPoint[]): DataPoint[] {
     const map = new Map<string, number>()
     for (const point of data) {
@@ -323,7 +306,6 @@ interface HorizontalBarChartProps {
     yAxisWidth?: number
 }
 
-/** Horizontal bar chart — dynamic height, truncated Y-axis ticks, value labels */
 const HorizontalBarChart = memo(({
     data,
     colorFn = (_, i) => getCategoricalColor(i),
@@ -376,7 +358,6 @@ interface VerticalBarProps {
     height?: number
 }
 
-/** Vertical bar chart — truncated X-axis ticks, dynamic bottom margin, value labels */
 const VerticalBarChart = memo(({
     data,
     colorFn = (_, i) => getCategoricalColor(i),
@@ -490,33 +471,20 @@ interface ChartCardProps {
     className?: string
 }
 
-const ChartCard = memo(({ title, children, empty = false, className }: ChartCardProps) => {
-    const reduce = useReducedMotion()
-    return (
-        <motion.div
-            variants={reduce ? undefined : modernRevealVariant}
-            initial={reduce ? undefined : 'hidden'}
-            whileInView={reduce ? undefined : 'visible'}
-            viewport={VIEWPORT}
-            whileHover={reduce ? undefined : { y: -3, boxShadow: '0 10px 28px rgba(15,23,42,0.06)' }}
-            transition={{ duration: 0.28 }}
-            style={{ display: 'block' }}
-        >
-            <Card className={className}>
-                <CardHeader className="px-5 py-4">
-                    <CardTitle className="text-sm font-semibold tracking-wide text-foreground/80">
-                        {title}
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="px-5 pb-5 pt-0">
-                    {empty ? (
-                        <p className="py-10 text-center text-xs text-muted-foreground">No data available</p>
-                    ) : children}
-                </CardContent>
-            </Card>
-        </motion.div>
-    )
-})
+const ChartCard = memo(({ title, children, empty = false, className }: ChartCardProps) => (
+    <Card className={className}>
+        <CardHeader className="px-5 py-4">
+            <CardTitle className="text-sm font-semibold tracking-wide text-foreground/80">
+                {title}
+            </CardTitle>
+        </CardHeader>
+        <CardContent className="px-5 pb-5 pt-0">
+            {empty ? (
+                <p className="py-10 text-center text-xs text-muted-foreground">No data available</p>
+            ) : children}
+        </CardContent>
+    </Card>
+))
 ChartCard.displayName = 'ChartCard'
 
 // ── Main Component ────────────────────────────────────────────────────────────
@@ -534,8 +502,6 @@ export function PatientStatsSection({ stats, patients }: PatientStatsSectionProp
         (n: number) => (stats.total ? `${((n / stats.total) * 100).toFixed(0)}%` : '0%'),
         [stats.total],
     )
-
-    const reduce = useReducedMotion()
 
     // Deduplicate + normalize all categorical data — memoized for performance
     const diseaseData = useMemo(() => dedupeData(stats.diseaseData), [stats.diseaseData])
@@ -559,20 +525,15 @@ export function PatientStatsSection({ stats, patients }: PatientStatsSectionProp
     const genderColorFn = useCallback(
         (name: string) => CHART_COLORS.gender[name] ?? CHART_COLORS.stageFallback, [],
     )
-    // Stage color uses normalized name so ALL spelling variants (Stage II / stage 2 / Stage Ii)
-    // resolve to the same canonical color.
     const stageColorFn = useCallback(
         (name: string, index: number) => {
             const normalized = normalizeMedicalTerm(name)
             const mapped = CHART_COLORS.stage[normalized]
             if (mapped) return mapped
-            // Fallback: use categorical palette for easy differentiation
             return getCategoricalColor(index)
         }, [],
     )
 
-    // Cancer stage — explicit progressive red palette (light → dark)
-    // Use explicit mapping so tones remain consistently red.
     const progressiveRed: Record<string, string> = {
         'Stage 0': '#F2D0D0',
         'Stage I': '#E6A8A8',
@@ -599,7 +560,6 @@ export function PatientStatsSection({ stats, patients }: PatientStatsSectionProp
         return key ? progressiveRed[key] : CHART_COLORS.stageFallback
     }, [])
 
-    // Ration card specific colors
     const rationColorFn = useCallback((name: string) => {
         const normalized = normalizeMedicalTerm(name).toLowerCase()
         if (/yellow/.test(normalized)) return CHART_COLORS.warning
@@ -611,13 +571,7 @@ export function PatientStatsSection({ stats, patients }: PatientStatsSectionProp
         <div className="space-y-5">
 
             {/* ── KPI Cards ────────────────────────────────────────────── */}
-            <motion.div
-                className="grid grid-cols-2 gap-3 sm:grid-cols-4 items-stretch"
-                variants={reduce ? undefined : staggerContainer}
-                initial={reduce ? undefined : 'hidden'}
-                whileInView={reduce ? undefined : 'visible'}
-                viewport={VIEWPORT}
-            >
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 <StatCard title="Total Patients" value={stats.total} icon={Users} iconClassName="text-primary" />
                 <StatCard title="Alive" value={stats.alive} icon={Heart} iconClassName="text-emerald-600" subtitle={`${pct(stats.alive)} of total`} />
                 <StatCard title="Deceased" value={stats.deceased} icon={Skull} iconClassName="text-rose-600" subtitle={`${pct(stats.deceased)} of total`} />
@@ -626,7 +580,7 @@ export function PatientStatsSection({ stats, patients }: PatientStatsSectionProp
                 <StatCard title="Female Patients" value={stats.female} icon={Activity} iconClassName="text-pink-600" />
                 <StatCard title="ASHA Assigned" value={stats.withAsha} icon={UserCheck} iconClassName="text-teal-600" subtitle={`${pct(stats.withAsha)} coverage`} />
                 <StatCard title="No ASHA Assigned" value={stats.withoutAsha} icon={UserX} iconClassName="text-amber-600" />
-            </motion.div>
+            </div>
 
             {/* ── Row 1: Status + Gender ────────────────────────────────── */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -649,7 +603,6 @@ export function PatientStatsSection({ stats, patients }: PatientStatsSectionProp
                         data={diseaseData}
                         colorFn={(_, i) => getCategoricalColor(i)}
                         yAxisWidth={128}
-                        height={270}
                     />
                 </ChartCard>
 
